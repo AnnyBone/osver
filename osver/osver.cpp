@@ -28,6 +28,7 @@ BYTE Osver::_isEqualProductType(BYTE productType)
 
 bool Osver::isEqualSuiteMask(BYTE suiteMask)
 {
+	//Detecting a Product Suite
 	OSVERSIONINFOEX osVersionInfo;
 	::ZeroMemory(&osVersionInfo, sizeof(OSVERSIONINFOEX));
 	osVersionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
@@ -37,8 +38,8 @@ bool Osver::isEqualSuiteMask(BYTE suiteMask)
 }
 
 DWORD Osver::getProductType()
-{	
-	
+{
+
 	/*
 		#define VER_NT_WORKSTATION              0x0000001
 		#define VER_NT_DOMAIN_CONTROLLER        0x0000002
@@ -51,12 +52,12 @@ DWORD Osver::getProductType()
 	return 0; //unknown
 }
 
-DWORD Osver::_getOsver()
+DWORD Osver::getVersion()
 {
 	DWORD version = false;
 	OSVERSIONINFOEXW osv;
 	osv.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXW);
-	ZeroMemory(&osv, sizeof(OSVERSIONINFOEXW)); //Mem::_zero(&osv, sizeof(POSVERSIONINFOEXW));
+	//ZeroMemory(&osv, sizeof(OSVERSIONINFOEXW)); //Mem::_zero(&osv, sizeof(POSVERSIONINFOEXW));
 
 	getMinorAndMajor(&osv);
 
@@ -87,14 +88,33 @@ DWORD Osver::_getOsver()
 	return  version;
 }
 
-int  main()
+void Osver::getVersionEx(COSINFO* prt)
 {
+	ZeroMemory(prt, sizeof(COSINFO));
 	OSVERSIONINFOEXW osv;
 	osv.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXW);
-	Osver::getMinorAndMajor(&osv);
 
-	std::cout << Osver::_getOsver();
+	prt->version = getVersion();
+	if (prt->version != NULL)
+	{
+		// OK Let's get sp pack
 
+	}
+
+
+	/*
+		SYSTEM_INFO si;
+		GetNativeSystemInfo(&si);
+		*/
+}
+
+
+int  main()
+{
+	COSINFO osinfo;
+	Osver::getVersionEx(&osinfo);
+	std::cout << osinfo.version;
+	;
 	system("pause");
 
 	return 0;

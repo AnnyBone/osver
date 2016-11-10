@@ -3,6 +3,14 @@
 #ifndef osver_H
 #define osver_H
 
+typedef struct COSINFO
+{
+	DWORD version;		//Windows Version
+	DWORD sp;			//service Pack
+	WORD build;			// build number						
+	WORD architecture;
+
+}COSINFO;
 
 enum knownSo
 {
@@ -35,7 +43,8 @@ namespace Osver
 	BYTE _isEqualProductType(BYTE productType);
 	bool isEqualSuiteMask(BYTE suiteMask);
 	DWORD getProductType();
-	DWORD _getOsver();
+	DWORD getVersion();
+	void getVersionEx(COSINFO *prt);
 
 }
 
