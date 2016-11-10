@@ -37,6 +37,16 @@ bool Osver::isEqualSuiteMask(BYTE suiteMask)
 	return ::VerifyVersionInfo(&osVersionInfo, VER_SUITENAME, maskCondition);
 }
 
+bool Osver::isEqualServicePack(WORD servicePackMajor)
+{
+	OSVERSIONINFOEX osVersionInfo;
+	::ZeroMemory(&osVersionInfo, sizeof(OSVERSIONINFOEX));
+	osVersionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+	osVersionInfo.wServicePackMajor = servicePackMajor;
+	ULONGLONG maskCondition = ::VerSetConditionMask(0, VER_SERVICEPACKMAJOR, VER_EQUAL);
+	return ::VerifyVersionInfo(&osVersionInfo, VER_SERVICEPACKMAJOR, maskCondition);
+}
+
 DWORD Osver::getProductType()
 {
 
@@ -50,6 +60,21 @@ DWORD Osver::getProductType()
 	else if (_isEqualProductType(VER_NT_WORKSTATION))return VER_NT_DOMAIN_CONTROLLER;
 	else if (_isEqualProductType(VER_NT_SERVER))return VER_NT_SERVER;
 	return 0; //unknown
+}
+
+WORD Osver::getServicePack()
+{
+	WORD sp = NULL;
+	for (size_t i = 1; i <= 4; i++)
+	{
+		if (isEqualServicePack(i))
+		{
+			sp = isEqualServicePack(i);
+			break;
+		}
+	}
+
+	return sp;
 }
 
 DWORD Osver::getVersion()
@@ -91,30 +116,55 @@ DWORD Osver::getVersion()
 void Osver::getVersionEx(COSINFO* prt)
 {
 	ZeroMemory(prt, sizeof(COSINFO));
-	OSVERSIONINFOEXW osv;
-	osv.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXW);
-
+	
 	prt->version = getVersion();
-	if (prt->version != NULL)
+
+	if (prt->version != NULL) prt->sp = getServicePack();
+	
+
+	/* 
+							fixme later need
+			We need to find another way to get the * dwBuildNumber *
+				Maybe we will read it from the registry keys
+	
+	*/
+
+	SYSTEM_INFO si;
+	GetNativeSystemInfo(&si);
+	if (si.wProcessorArchitecture != PROCESSOR_ARCHITECTURE_UNKNOWN)
 	{
-		// OK Let's get sp pack
-
+		prt->architecture = si.wProcessorArchitecture;
 	}
+	
 
-
-	/*
-		SYSTEM_INFO si;
-		GetNativeSystemInfo(&si);
-		*/
+		
 }
 
 
 int  main()
 {
-	COSINFO osinfo;
-	Osver::getVersionEx(&osinfo);
-	std::cout << osinfo.version;
-	;
+	switch (Osver::getVersion())
+	{
+
+	case unknown: printf("Tu versicion de Windows es: %s\n", "Desconocido");
+	case Windows2000: printf("Tu versicion de Windows es: %s\n", "Windows 2000");
+	case WindowsXP:  printf("Tu versicion de Windows es: %s\n", "Windows XP");
+	case WindowsXPProfessionalx64: printf("Tu versicion de Windows es: %s\n", "Windows XP Professional x64 Edition");
+	case WindowsServer2003:printf("Tu versicion de Windows es: %s\n", "Windows Server 2003");
+	case WindowsHomeServer: printf("Tu versicion de Windows es: %s\n", "Windows Home Server");
+	case WindowsServer2003R2: printf("Tu versicion de Windows es: %s\n", "Windows Server 2003 R2");
+	case WindowsVista: printf("Tu versicion de Windows es: %s\n", "Windows Vista");
+	case WindowsServer2008: printf("Tu versicion de Windows es: %s\n", "Windows Server 2008");
+	case WindowsServer2008R2: printf("Tu versicion de Windows es: %s\n", "Windows Server 2008 R2");
+	case Windows7: printf("Tu versicion de Windows es: %s\n", "Windows 7");
+	case WindowsServer2012: printf("Tu versicion de Windows es: %s\n", "Windows Server 2012");
+	case Windows8: printf("Tu versicion de Windows es: %s\n", "Windows 8");
+	case WindowsServer2012R2: printf("Tu versicion de Windows es: %s\n", "Windows Server 2012 R2");
+	case Windows8_1: printf("Tu versicion de Windows es: %s\n", "Windows 8.1");
+	case WindowsServer2016TechnicalPreview: printf("Tu versicion de Windows es: %s\n", "Windows Server 2016");
+	case Windows10: printf("Tu versicion de Windows es: %s\n", "Windows 10");
+
+	}
 	system("pause");
 
 	return 0;

@@ -42,7 +42,9 @@ namespace Osver
 	void getMinorAndMajor(POSVERSIONINFOEXW pVersions);
 	BYTE _isEqualProductType(BYTE productType);
 	bool isEqualSuiteMask(BYTE suiteMask);
+	bool  isEqualServicePack(WORD servicePackMajor);
 	DWORD getProductType();
+	WORD getServicePack();
 	DWORD getVersion();
 	void getVersionEx(COSINFO *prt);
 
