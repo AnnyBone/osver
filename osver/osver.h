@@ -33,7 +33,9 @@ namespace Osver
 
 	void getMinorAndMajor(POSVERSIONINFOEXW pVersions);
 	BYTE _isEqualProductType(BYTE productType);
+	bool isEqualSuiteMask(BYTE suiteMask);
 	DWORD getProductType();
+	DWORD _getOsver();
 
 }
 
